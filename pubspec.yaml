@@ -1,0 +1,21 @@
+name: colage_switch
+description: "You can really switch on what you want, but not really. Kind regards, Your Collage."
+publish_to: 'none'
+version: 1.0.0
+
+environment:
+  sdk: ^3.5.3
+
+dependencies:
+  flutter:
+    sdk: flutter
+  icons_launcher: ^3.0.0
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
