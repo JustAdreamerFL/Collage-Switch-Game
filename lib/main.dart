@@ -1,6 +1,9 @@
+import 'dart:async';
 import 'dart:math';
 import 'package:colage_switch/switch_w_text.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() {
   runApp(const MainApp());
@@ -22,8 +25,20 @@ class _MainAppState extends State<MainApp> {
   bool value2 = false;
   bool value3 = false;
 
+  bool showHighscore = false;
+  bool showButton = false;
+
   DateTime? lastSwitchChangeTime;
   Duration highScore = Duration(days: 1);
+  @override
+  void initState() {
+    super.initState();
+    Timer(Duration(seconds: 6), () {
+      setState(() {
+        showButton = true;
+      });
+    });
+  }
 
   void _updateHighScore() {
     if (lastSwitchChangeTime != null) {
@@ -32,6 +47,7 @@ class _MainAppState extends State<MainApp> {
       if (timeDifference < highScore) {
         setState(() {
           highScore = timeDifference;
+          showHighscore = true;
         });
       }
       lastSwitchChangeTime = currentTime;
@@ -88,33 +104,62 @@ class _MainAppState extends State<MainApp> {
     });
   }
 
+  void _launchURL() async {
+    final Uri url = Uri.parse(
+        "https://www.instagram.com/reel/DA8mxK-SEOW/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==");
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
         body: Center(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SizedBox(
-                height: 300,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(25, 30, 0, 0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      SwitchAndText(value: value1, text: text1, onChanged: onChanged1),
-                      SwitchAndText(value: value2, text: text2, onChanged: onChanged2),
-                      SwitchAndText(value: value3, text: text3, onChanged: onChanged3),
-                    ],
+              Column(
+                children: [
+                  SizedBox(
+                    height: 300,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          SwitchAndText(value: value1, text: text1, onChanged: onChanged1),
+                          SwitchAndText(value: value2, text: text2, onChanged: onChanged2),
+                          SwitchAndText(value: value3, text: text3, onChanged: onChanged3),
+                        ],
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
-              if (highScore != Duration(days: 1))
-                Text(
+              // if (highScore != Duration(days: 1))
+              AnimatedOpacity(
+                opacity: showHighscore ? 1.0 : 0.0,
+                duration: Duration(seconds: 1),
+                child: Text(
                   'High Score: ${highScore.inMilliseconds} milliseconds',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
+              ),
+              const SizedBox(height: 50),
+              AnimatedOpacity(
+                opacity: showButton ? 1.0 : 0.0,
+                duration: Duration(seconds: 1),
+                child: CupertinoButton.filled(
+                  onPressed: _launchURL,
+                  child: Text('Recreation of this meme'),
+                ),
+              ),
             ],
           ),
         ),
