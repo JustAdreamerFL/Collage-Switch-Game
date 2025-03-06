@@ -1,3 +1,4 @@
-# colage_switch
+# A game that every high schooler knows
 
-A new Flutter project.
+[this link](https://collageswitchgame.web.app/)
+(this link)[https://collageswitchgame.web.app/]
